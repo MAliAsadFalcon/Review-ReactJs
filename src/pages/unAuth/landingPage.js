@@ -19,7 +19,9 @@ const Header = styled.nav`
 const Content = styled.div`
   font-size: 46px;
   font-weight: bolder;
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
 `;
 const Container = styled.div`
   text-align: center;
@@ -27,7 +29,7 @@ const Container = styled.div`
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: url("/assets/BG.jpg") center center / cover no-repeat fixed;
+  background: url("/assets/BG.jpeg") center center / cover no-repeat fixed;
 `;
 
 const Button = styled.button`
@@ -58,7 +60,14 @@ const landingPage = () => {
         </Link>
       </Header>
       <Content data-aos="fade-up" data-aos-duration="1200">
-        <p>YOU GOTTA NOURISH TO FLOURISH!</p>
+        <p
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.3)",
+            borderRadius: 8,
+          }}
+        >
+          YOU GOTTA NOURISH TO FLOURISH!
+        </p>
       </Content>
     </Container>
   );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, useHistory } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 
 const UseStyles = makeStyles({
   field: {
@@ -26,7 +26,7 @@ const UseStyles = makeStyles({
     height: "100vh",
     width: "100vw",
     overflow: "hidden",
-    background: "url('/assets/BG.jpg') center center / cover no-repeat fixed",
+    background: "url('/assets/BG.jpeg') center center / cover no-repeat fixed",
   },
 });
 

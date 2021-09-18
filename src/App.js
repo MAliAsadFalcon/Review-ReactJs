@@ -1,31 +1,19 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import LandingPage from "./pages/landingPage";
-import Signup from "./pages/signup";
-import Login from "./pages/login";
+import React, { useContext } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Unauth from "./pages/unAuth/index";
+import User from "./pages/user/index";
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import UserContext from "./context/UserContext";
 
 function App() {
+  const { user } = useContext(UserContext);
   useEffect(() => {
     AOS.init();
   }, []);
   return (
-    <div>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <LandingPage />
-          </Route>
-          <Route exact path="/signup">
-            <Signup />
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-        </Switch>
-      </Router>
-    </div>
+    <Router>{user.role ? user.role === "user" && <User /> : <Unauth />}</Router>
   );
 }
 
