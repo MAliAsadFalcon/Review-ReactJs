@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Cards from "../../components/Cards";
+import React, { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
+import Header from "../../components/Header";
+import Button from "../../components/Button";
+import UserContext from "../../context/UserContext";
 import axios from "../../utils/axios";
 import _ from "lodash";
-import Header from "../../components/Header";
+import Cards from "../../components/Cards";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   position: absolute;
@@ -18,6 +21,8 @@ const Content = styled.div`
 `;
 
 const Main = () => {
+  const { user } = useContext(UserContext);
+
   const [restaurants, setrestaurants] = useState([]);
   const [reviews, setReviews] = useState([]);
 
@@ -26,17 +31,29 @@ const Main = () => {
   }, []);
 
   const fetchData = async () => {
-    const tempRestaurants = await axios.get("/restaurant/");
+    const tempRestaurants = await axios.get(
+      `/restaurant/getByOwnerId/${user._id}`
+    );
     const tempReviews = await axios.get("/review/");
-    setReviews(tempReviews.data.review);
     setrestaurants(tempRestaurants.data.restaurant);
+    setReviews(tempReviews.data.review);
   };
 
   return (
     <Container>
       <Header />
       <Content>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ marginLeft: "1.2rem" }}>
+          <Link to="/create">
+            <Button label="ADD NEW" />
+          </Link>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+          }}
+        >
           {restaurants.map((restaurant) => {
             let tempArray = [];
             let averageReview = 0;

@@ -21,7 +21,7 @@ const Cards = ({ name, rating, image, description, restaurantId }) => {
         style={{
           textAlign: "left",
           marginLeft: -8,
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          backgroundColor: "#4B4B4B",
           color: "white",
         }}
       />
@@ -35,7 +35,7 @@ const Cards = ({ name, rating, image, description, restaurantId }) => {
         style={{
           textAlign: "left",
           marginLeft: -8,
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          backgroundColor: "#4B4B4B",
           color: "white",
         }}
       >
@@ -43,7 +43,7 @@ const Cards = ({ name, rating, image, description, restaurantId }) => {
       </CardContent>
       <CardActions
         style={{
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          backgroundColor: "#4B4B4B",
           color: "white",
           borderTop: "2px solid black",
         }}

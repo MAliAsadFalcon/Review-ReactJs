@@ -55,7 +55,10 @@ const Signout = () => {
         alt=""
       />
       <DropDown>
-        <span onClick={signout}> SignOut</span>
+        <span onClick={signout} style={{ color: "white" }}>
+          {" "}
+          SignOut
+        </span>
       </DropDown>
     </SignOut>
   );

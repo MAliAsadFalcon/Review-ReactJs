@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Signout from "./Signout";
+import Button from "./Button";
 
 const Container = styled.nav`
   position: relative;
@@ -15,27 +16,13 @@ const Container = styled.nav`
   border-bottom: 3px solid rgba(0, 0, 0, 0.6);
 `;
 
-const Button = styled.button`
-  position: relative;
-  background-color: rgba(0, 0, 0, 0.4);
-  color: white;
-  padding: 10px 20px;
-  border: 1px solid white;
-  margin-right: 20px;
-  &:hover {
-    background-color: rgba(208, 211, 212, 0.2);
-    border: 1px solid white;
-    color: white;
-  }
-`;
-
 const Header = () => {
   const { user } = useContext(UserContext);
 
   return (
     <Container>
       {user.role ? (
-        user.role === "user" && (
+        user.role === "user" ? (
           <div
             style={{
               display: "flex",
@@ -64,6 +51,37 @@ const Header = () => {
 
             <Signout />
           </div>
+        ) : (
+          (user.role = "owner" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 2,
+              }}
+            >
+              <p
+                style={{
+                  marginLeft: 3,
+                  marginTop: "-.2rem",
+                  fontSize: 46,
+                  fontWeight: "bolder",
+                }}
+              >
+                <Link
+                  to="/"
+                  style={{
+                    textDecoration: "none",
+                    color: "rgba(255, 255, 255, 0.8)",
+                  }}
+                >
+                  YOUR RESTAURANT LIST!
+                </Link>
+              </p>
+
+              <Signout />
+            </div>
+          ))
         )
       ) : (
         <div
@@ -74,10 +92,10 @@ const Header = () => {
           }}
         >
           <Link to="/login">
-            <Button>Login</Button>
+            <Button label="Login" />
           </Link>
           <Link to="/signup">
-            <Button>Signup</Button>
+            <Button label="Signup" />
           </Link>
         </div>
       )}

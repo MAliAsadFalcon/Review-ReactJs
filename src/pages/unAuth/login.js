@@ -28,7 +28,7 @@ const UseStyles = makeStyles({
     height: "100vh",
     width: "100vw",
     overflow: "hidden",
-    background: "url('/assets/BG.jpg') center center / cover no-repeat fixed",
+    backgroundColor: "#2a2a2a",
   },
 });
 

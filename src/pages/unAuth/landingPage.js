@@ -15,7 +15,7 @@ const Container = styled.div`
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: url("/assets/BG.jpg") center center / cover no-repeat fixed;
+  background: url("/assets/BG.jpeg") center center / cover no-repeat fixed;
 `;
 
 const landingPage = () => {
