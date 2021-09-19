@@ -9,6 +9,7 @@ const UseStyles = makeStyles({
     width: 292.5,
     height: 30,
     marginBottom: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
   },
   btn: {
     fontSize: 18,
@@ -26,7 +27,7 @@ const UseStyles = makeStyles({
     height: "100vh",
     width: "100vw",
     overflow: "hidden",
-    background: "url('/assets/BG.jpeg') center center / cover no-repeat fixed",
+    background: "url('/assets/BG.jpg') center center / cover no-repeat fixed",
   },
 });
 

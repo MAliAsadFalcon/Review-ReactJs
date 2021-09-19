@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Cards from "../../components/Cards";
 import styled from "styled-components";
+import axios from "../../utils/axios";
+import _ from "lodash";
+import Header from "../../components/Header";
 
 const Container = styled.div`
-  text-align: center;
   position: absolute;
   height: 100vh;
   width: 100vw;
@@ -11,35 +13,52 @@ const Container = styled.div`
   background: url("/assets/BG3.jpg") center center / cover no-repeat fixed;
 `;
 const Content = styled.div`
-  font-size: 46px;
-  font-weight: bolder;
-  color: rgba(0, 0, 0, 0.8);
-  margin-top: 35px;
+  margin-top: 2rem;
   margin-bottom: 20px;
 `;
+
 const Main = () => {
+  const [restaurants, setrestaurants] = useState([]);
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const tempRestaurants = await axios.get("/restaurant/");
+    const tempReviews = await axios.get("/review/");
+    setReviews(tempReviews.data.review);
+    setrestaurants(tempRestaurants.data.restaurant);
+  };
+
   return (
     <Container>
+      <Header />
       <Content>
-        <u
-          data-aos="fade-up"
-          data-aos-duration="1200"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.3)",
-            borderRadius: 8,
-          }}
-        >
-          GOODIES FOR THE FOODIES!
-        </u>
-        <div
-          style={{ display: "flex", justifyContent: "center" }}
-          data-aos="zoom-in"
-          data-aos-duration="1200"
-          data-aos-delay="650"
-        >
-          <Cards />
-          <Cards />
-          <Cards />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {restaurants.map((restaurant) => {
+            let tempArray = [];
+            let averageReview = 0;
+
+            reviews.map((review) => {
+              if (restaurant._id === review.restaurant) {
+                tempArray.push(parseInt(review.star));
+              }
+              return null;
+            });
+
+            averageReview = _.sum(tempArray) / tempArray.length;
+            return (
+              <Cards
+                name={restaurant.name}
+                rating={averageReview}
+                image={restaurant.image}
+                description={restaurant.description}
+                restaurantId={restaurant._id}
+              />
+            );
+          })}
         </div>
       </Content>
     </Container>

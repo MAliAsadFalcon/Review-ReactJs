@@ -7,6 +7,7 @@ import UserContext from "../../context/UserContext";
 
 const UseStyles = makeStyles({
   field: {
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
     width: 292.5,
     height: 30,
     marginBottom: 20,
@@ -27,7 +28,7 @@ const UseStyles = makeStyles({
     height: "100vh",
     width: "100vw",
     overflow: "hidden",
-    background: "url('/assets/BG.jpeg') center center / cover no-repeat fixed",
+    background: "url('/assets/BG.jpg') center center / cover no-repeat fixed",
   },
 });
 

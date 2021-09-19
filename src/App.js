@@ -1,20 +1,27 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import Unauth from "./pages/unAuth/index";
-import User from "./pages/user/index";
+import Routes from "./utils/routes";
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import UserContext from "./context/UserContext";
+import axios from "./utils/axios";
 
 function App() {
-  const { user } = useContext(UserContext);
+  axios.defaults.withCredentials = true;
+  const { setUser } = useContext(UserContext);
   useEffect(() => {
+    checkLogin();
     AOS.init();
   }, []);
-  return (
-    <Router>{user.role ? user.role === "user" && <User /> : <Unauth />}</Router>
-  );
+
+  const checkLogin = async () => {
+    const result = await axios.get("/user/loggedin");
+    if (!result.data.error) {
+      setUser(result.data.user);
+    }
+  };
+
+  return <Routes />;
 }
 
 export default App;

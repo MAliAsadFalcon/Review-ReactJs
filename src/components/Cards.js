@@ -8,14 +8,16 @@ import {
   Rating,
   CardActions,
 } from "@mui/material";
-import StarsIcon from "@mui/icons-material/Stars";
+import { Link } from "react-router-dom";
 
-const Cards = () => {
+const Cards = ({ name, rating, image, description, restaurantId }) => {
   return (
     <Card elevation="2" style={{ margin: 20, width: 345 }}>
       <CardHeader
-        title="cafe perks"
-        subheader={<Rating name="read-only" value="3" readOnly />}
+        title={name}
+        subheader={
+          <Rating name="read-only" value={rating} precision={0.5} readOnly />
+        }
         style={{
           textAlign: "left",
           marginLeft: -8,
@@ -26,7 +28,7 @@ const Cards = () => {
       <CardMedia
         component="img"
         height="194"
-        image="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
+        image={`http://localhost:5000/${image}`}
         alt="Paella dish"
       />
       <CardContent
@@ -37,7 +39,7 @@ const Cards = () => {
           color: "white",
         }}
       >
-        <Typography>best restaurant</Typography>
+        <Typography>{description}</Typography>
       </CardContent>
       <CardActions
         style={{
@@ -46,8 +48,9 @@ const Cards = () => {
           borderTop: "2px solid black",
         }}
       >
-        <Typography size="small">Rate this restaurant?</Typography>
-        <StarsIcon />
+        <Typography>
+          <Link to={`/restaurantview/${restaurantId}`}>View restaurant</Link>
+        </Typography>
       </CardActions>
     </Card>
   );
