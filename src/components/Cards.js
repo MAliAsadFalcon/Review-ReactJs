@@ -39,7 +39,7 @@ const Cards = ({ name, rating, image, description, restaurantId }) => {
           color: "white",
         }}
       >
-        <Typography>{description}</Typography>
+        <Typography noWrap>{description}</Typography>
       </CardContent>
       <CardActions
         style={{

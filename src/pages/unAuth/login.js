@@ -69,6 +69,16 @@ const Login = () => {
     <div>
       <Container className={classes.Container} maxWidth={false}>
         <form className={classes.form} onSubmit={onSubmit}>
+          <div
+            style={{
+              color: "white",
+              fontSize: 18,
+              height: 25,
+              textAlign: "center",
+            }}
+          >
+            Login
+          </div>
           <div style={{ color: "red", height: 25 }}>{Error && Error}</div>
           <div style={{ marginBottom: 15 }}>
             <input

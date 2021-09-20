@@ -35,8 +35,14 @@ const Main = () => {
   return (
     <Container>
       <Header />
+
       <Content>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+          }}
+        >
           {restaurants.map((restaurant) => {
             let tempArray = [];
             let averageReview = 0;

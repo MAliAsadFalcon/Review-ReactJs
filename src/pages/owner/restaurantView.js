@@ -58,10 +58,10 @@ const RestaurantView = () => {
 
   const [restaurant, setRestaurant] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [reviewReply, setReviewReply] = useState([]);
   const [averageReview, setAverageReview] = useState(0);
-  const [rating, setRating] = useState(1);
-  const [comments, setComments] = useState("");
-  const [disable, setDisable] = useState(false);
+  const [reply, setReply] = useState("");
+  const [reviewToReply, setReviewToReply] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -80,11 +80,10 @@ const RestaurantView = () => {
     setRestaurant(tempRestaurants.data.restaurant);
     const tempReviews = await axios.get("/review/");
     setReviews(tempReviews.data.review);
-    setDisable(
-      tempReviews.data.review.find((review) => review.user._id === user._id)
-        ? true
-        : false
+    const tempReviewReply = await axios.get(
+      `/reviewreply/getByOwnerId/${user._id}`
     );
+    setReviewReply(tempReviewReply.data.reviewReply);
   };
 
   const avgReview = () => {
@@ -105,14 +104,16 @@ const RestaurantView = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const review = {
-      star: rating,
-      comments: comments,
-      restaurant: restaurantId,
-      user: user._id,
+    const reviewReply = {
+      reply: reply,
+      review: reviewToReply,
+      owner: user._id,
     };
-    axios.post("/review/create", review);
-    history.push("/");
+    axios.post("/reviewreply/create", reviewReply).then(() => {
+      axios.put(`/review/replied/${reviewToReply}`).then(() => {
+        history.push("/");
+      });
+    });
   };
 
   return (
@@ -153,77 +154,111 @@ const RestaurantView = () => {
         <Divider style={{ background: "grey" }} />
         {reviews.map((review) => {
           return (
-            <ListItem alignItems="flex-start">
-              <ListItemText
-                primary={review.user.username}
-                secondary={
-                  <div>
-                    <Rating name="read-only" value={review.star} readOnly />
-                    <br />
-                    <Typography
-                      sx={{ display: "inline", color: "white", fontSize: 22 }}
-                      component="span"
-                      variant="body2"
-                      color="text.primary"
+            review.restaurant === restaurant._id && (
+              <div>
+                <ListItem alignItems="flex-start">
+                  <ListItemText
+                    primary={review.user.username}
+                    secondary={
+                      <div>
+                        <Rating name="read-only" value={review.star} readOnly />
+                        <br />
+                        <Typography
+                          sx={{
+                            display: "inline",
+                            color: "white",
+                            fontSize: 22,
+                          }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          {review.comments}
+                        </Typography>
+                      </div>
+                    }
+                  />
+                </ListItem>
+                {!review.reply ? (
+                  <form onSubmit={onSubmit}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column",
+                        marginBottom: "2rem",
+                      }}
                     >
-                      {review.comments}
-                    </Typography>
-                  </div>
-                }
-              />
-            </ListItem>
+                      <textarea
+                        name="reply"
+                        value={reply}
+                        onChange={(e) => {
+                          setReply(e.target.value);
+                          setReviewToReply(review._id);
+                        }}
+                        placeholder="Write your reply"
+                        style={{
+                          backgroundColor: "rgba(255, 255, 255, 0.8)",
+                          fontSize: 16,
+                          marginLeft: "auto",
+                          marginRight: "auto",
+                          width: "90vw",
+                          height: 60,
+                        }}
+                      />
+                      <div
+                        style={{ display: "flex", justifyContent: "flex-end" }}
+                      >
+                        <Button
+                          style={{
+                            marginTop: 6,
+                            maxWidth: 145,
+                            right: "3.2rem",
+                          }}
+                          variant="contained"
+                          type="submit"
+                        >
+                          Share Reply
+                        </Button>
+                      </div>
+                    </div>
+                  </form>
+                ) : (
+                  reviewReply.map((item) => {
+                    return (
+                      review._id === item.review && (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            flexDirection: "column",
+                            marginBottom: "2rem",
+                          }}
+                        >
+                          <textarea
+                            name="comments"
+                            disabled
+                            value={item.reply}
+                            placeholder="Write your comment"
+                            style={{
+                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              fontSize: 16,
+                              marginLeft: "auto",
+                              marginRight: "auto",
+                              width: "90vw",
+                              height: 60,
+                            }}
+                          />
+                        </div>
+                      )
+                    );
+                  })
+                )}
+              </div>
+            )
           );
         })}
       </List>
-      <form onSubmit={onSubmit}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            marginBottom: "2rem",
-          }}
-        >
-          <Rating
-            style={{ marginLeft: "3.2rem", marginBottom: 5, width: 20 }}
-            name="simple-controlled"
-            value={rating}
-            disabled={disable}
-            onChange={(e) => {
-              setRating(e.target.value);
-            }}
-          />
-          <textarea
-            name="comments"
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            disabled={disable}
-            placeholder="Write your comment"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-              fontSize: 16,
-              marginLeft: "auto",
-              marginRight: "auto",
-              width: "90vw",
-              height: 100,
-            }}
-          />
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              disabled={disable}
-              style={{
-                marginTop: 6,
-                maxWidth: 145,
-                right: "3.2rem",
-              }}
-              variant="contained"
-              type="submit"
-            >
-              Share Review
-            </Button>
-          </div>
-        </div>
-      </form>
     </Container>
   );
 };

@@ -62,6 +62,7 @@ const RestaurantView = () => {
   const [rating, setRating] = useState(1);
   const [comments, setComments] = useState("");
   const [disable, setDisable] = useState(false);
+  const [reviewReply, setReviewReply] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -80,8 +81,14 @@ const RestaurantView = () => {
     setRestaurant(tempRestaurants.data.restaurant);
     const tempReviews = await axios.get("/review/");
     setReviews(tempReviews.data.review);
+    const tempReviewReply = await axios.get(`/reviewreply/`);
+    setReviewReply(tempReviewReply.data.reviewReply);
     setDisable(
-      tempReviews.data.review.find((review) => review.user._id === user._id)
+      tempReviews.data.review.find((review) => {
+        if (review.restaurant === tempRestaurants.data.restaurant._id) {
+          return review.user._id === user._id;
+        }
+      })
         ? true
         : false
     );
@@ -153,25 +160,63 @@ const RestaurantView = () => {
         <Divider style={{ background: "grey" }} />
         {reviews.map((review) => {
           return (
-            <ListItem alignItems="flex-start">
-              <ListItemText
-                primary={review.user.username}
-                secondary={
-                  <div>
-                    <Rating name="read-only" value={review.star} readOnly />
-                    <br />
-                    <Typography
-                      sx={{ display: "inline", color: "white", fontSize: 22 }}
-                      component="span"
-                      variant="body2"
-                      color="text.primary"
-                    >
-                      {review.comments}
-                    </Typography>
-                  </div>
-                }
-              />
-            </ListItem>
+            review.restaurant === restaurant._id && (
+              <div>
+                <ListItem alignItems="flex-start">
+                  <ListItemText
+                    primary={review.user.username}
+                    secondary={
+                      <div>
+                        <Rating name="read-only" value={review.star} readOnly />
+                        <br />
+                        <Typography
+                          sx={{
+                            display: "inline",
+                            color: "white",
+                            fontSize: 22,
+                          }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          {review.comments}
+                        </Typography>
+                      </div>
+                    }
+                  />
+                </ListItem>
+                {review.reply &&
+                  reviewReply.map((item) => {
+                    return (
+                      review._id === item.review && (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            flexDirection: "column",
+                            marginBottom: "2rem",
+                          }}
+                        >
+                          <textarea
+                            name="comments"
+                            disabled
+                            value={item.reply}
+                            placeholder="Write your comment"
+                            style={{
+                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              fontSize: 16,
+                              marginLeft: "auto",
+                              marginRight: "auto",
+                              width: "90vw",
+                              height: 60,
+                            }}
+                          />
+                        </div>
+                      )
+                    );
+                  })}
+              </div>
+            )
           );
         })}
       </List>

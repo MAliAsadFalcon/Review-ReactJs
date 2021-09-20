@@ -75,6 +75,16 @@ const Signup = () => {
   return (
     <Container className={classes.Container} maxWidth={false}>
       <form className={classes.form} onSubmit={onSubmit}>
+        <div
+          style={{
+            color: "white",
+            fontSize: 18,
+            height: 25,
+            textAlign: "center",
+          }}
+        >
+          Signup
+        </div>
         <div style={{ color: "red", height: 25 }}>{Error && Error}</div>
         <div style={{ marginBottom: 15 }}>
           <input
