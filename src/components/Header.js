@@ -51,37 +51,45 @@ const Header = () => {
 
             <Signout />
           </div>
-        ) : (
-          (user.role = "owner" && (
-            <div
+        ) : user.role === "owner" ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: 2,
+            }}
+          >
+            <p
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 2,
+                marginLeft: 3,
+                marginTop: "-.2rem",
+                fontSize: 46,
+                fontWeight: "bolder",
               }}
             >
-              <p
+              <Link
+                to="/"
                 style={{
-                  marginLeft: 3,
-                  marginTop: "-.2rem",
-                  fontSize: 46,
-                  fontWeight: "bolder",
+                  textDecoration: "none",
+                  color: "rgba(255, 255, 255, 0.8)",
                 }}
               >
-                <Link
-                  to="/"
-                  style={{
-                    textDecoration: "none",
-                    color: "rgba(255, 255, 255, 0.8)",
-                  }}
-                >
-                  YOUR RESTAURANT LIST!
-                </Link>
-              </p>
+                YOUR RESTAURANT LIST!
+              </Link>
+            </p>
 
-              <Signout />
-            </div>
-          ))
+            <Signout />
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: 2,
+            }}
+          >
+            <Signout />
+          </div>
         )
       ) : (
         <div
