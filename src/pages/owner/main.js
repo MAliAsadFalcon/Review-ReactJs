@@ -7,6 +7,7 @@ import axios from "../../utils/axios";
 import _ from "lodash";
 import Cards from "../../components/Cards";
 import { Link } from "react-router-dom";
+import CardSkeleton from "../../components/CardSkeleton";
 
 const Container = styled.div`
   position: absolute;
@@ -25,6 +26,7 @@ const Main = () => {
 
   const [restaurants, setrestaurants] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -37,6 +39,7 @@ const Main = () => {
     const tempReviews = await axios.get("/review/");
     setrestaurants(tempRestaurants.data.restaurant);
     setReviews(tempReviews.data.review);
+    setLoading(false);
   };
 
   return (
@@ -54,28 +57,36 @@ const Main = () => {
             gridTemplateColumns: "repeat(3,minmax(0,1fr))",
           }}
         >
-          {restaurants.map((restaurant) => {
-            let tempArray = [];
-            let averageReview = 0;
+          {loading ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            restaurants.map((restaurant) => {
+              let tempArray = [];
+              let averageReview = 0;
 
-            reviews.map((review) => {
-              if (restaurant._id === review.restaurant) {
-                tempArray.push(parseInt(review.star));
-              }
-              return null;
-            });
+              reviews.map((review) => {
+                if (restaurant._id === review.restaurant) {
+                  tempArray.push(parseInt(review.star));
+                }
+                return null;
+              });
 
-            averageReview = _.sum(tempArray) / tempArray.length;
-            return (
-              <Cards
-                name={restaurant.name}
-                rating={averageReview}
-                image={restaurant.image}
-                description={restaurant.description}
-                restaurantId={restaurant._id}
-              />
-            );
-          })}
+              averageReview = _.sum(tempArray) / tempArray.length;
+              return (
+                <Cards
+                  name={restaurant.name}
+                  rating={averageReview}
+                  image={restaurant.image}
+                  description={restaurant.description}
+                  restaurantId={restaurant._id}
+                />
+              );
+            })
+          )}
         </div>
       </Content>
     </Container>

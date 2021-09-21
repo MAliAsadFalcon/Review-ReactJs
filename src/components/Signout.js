@@ -43,10 +43,8 @@ const SignOut = styled.div`
 `;
 
 const Signout = () => {
-  const history = useHistory();
   const signout = () => {
-    axios.delete("/user/logout");
-    window.location.reload();
+    axios.delete("/user/logout").then(() => window.location.reload());
   };
   return (
     <SignOut>

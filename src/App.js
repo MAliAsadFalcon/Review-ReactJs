@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Routes from "./utils/routes";
 import { useEffect } from "react";
 import AOS from "aos";
@@ -8,6 +8,8 @@ import axios from "./utils/axios";
 
 function App() {
   axios.defaults.withCredentials = true;
+
+  const [Loading, setLoading] = useState(true);
   const { setUser } = useContext(UserContext);
   useEffect(() => {
     checkLogin();
@@ -19,9 +21,10 @@ function App() {
     if (!result.data.error) {
       setUser(result.data.user);
     }
+    setLoading(false);
   };
 
-  return <Routes />;
+  return <Routes Loading={Loading} />;
 }
 
 export default App;

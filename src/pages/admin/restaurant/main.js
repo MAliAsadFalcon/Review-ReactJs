@@ -7,7 +7,7 @@ import Restaurant from "./restaurant";
 
 const Container = styled.div`
   position: absolute;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow-x: hidden;
   background-color: #2a2a2a;

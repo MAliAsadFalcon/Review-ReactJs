@@ -4,6 +4,7 @@ import { useParams, useHistory } from "react-router-dom";
 import axios from "../../utils/axios";
 import UserContext from "../../context/UserContext";
 import Header from "../../components/Header";
+import RestaurantViewSkeleton from "../../components/RestaurantViewSkeleton";
 
 import {
   Rating,
@@ -63,6 +64,7 @@ const RestaurantView = () => {
   const [comments, setComments] = useState("");
   const [disable, setDisable] = useState(false);
   const [reviewReply, setReviewReply] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -92,6 +94,7 @@ const RestaurantView = () => {
         ? true
         : false
     );
+    setLoading(false);
   };
 
   const avgReview = () => {
@@ -125,150 +128,162 @@ const RestaurantView = () => {
   return (
     <Container>
       <Header />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "2rem",
-        }}
-      >
-        <Text>{restaurant && restaurant.name}</Text>
-      </div>
-      <RatingConatiner>
-        <Rating
-          name="read-only"
-          value={averageReview}
-          precision={0.5}
-          readOnly
-        />
-      </RatingConatiner>
-      <Picture src={`http://localhost:5000/${restaurant.image}`} />
-      <DecriptionText>{restaurant && restaurant.description}</DecriptionText>
-      <List
-        sx={{
-          width: "95%",
-          bgcolor: "rgba(0, 0, 0, 0.8)",
-          color: "white",
-          marginLeft: "auto",
-          marginRight: "auto",
-          marginBottom: "2rem",
-        }}
-      >
-        <Typography style={{ marginLeft: "1rem", marginBottom: 7 }}>
-          Reviews
-        </Typography>
-        <Divider style={{ background: "grey" }} />
-        {reviews.map((review) => {
-          return (
-            review.restaurant === restaurant._id && (
-              <div>
-                <ListItem alignItems="flex-start">
-                  <ListItemText
-                    primary={review.user.username}
-                    secondary={
-                      <div>
-                        <Rating name="read-only" value={review.star} readOnly />
-                        <br />
-                        <Typography
-                          sx={{
-                            display: "inline",
-                            color: "white",
-                            fontSize: 22,
-                          }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {review.comments}
-                        </Typography>
-                      </div>
-                    }
-                  />
-                </ListItem>
-                {review.reply &&
-                  reviewReply.map((item) => {
-                    return (
-                      review._id === item.review && (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            flexDirection: "column",
-                            marginBottom: "2rem",
-                          }}
-                        >
-                          <textarea
-                            name="comments"
-                            disabled
-                            value={item.reply}
-                            placeholder="Write your comment"
-                            style={{
-                              backgroundColor: "rgba(255, 255, 255, 0.8)",
-                              fontSize: 16,
-                              marginLeft: "auto",
-                              marginRight: "auto",
-                              width: "90vw",
-                              height: 60,
-                            }}
-                          />
-                        </div>
-                      )
-                    );
-                  })}
-              </div>
-            )
-          );
-        })}
-      </List>
-      <form onSubmit={onSubmit}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            marginBottom: "2rem",
-          }}
-        >
-          <Rating
-            style={{ marginLeft: "3.2rem", marginBottom: 5, width: 20 }}
-            name="simple-controlled"
-            value={rating}
-            disabled={disable}
-            onChange={(e) => {
-              setRating(e.target.value);
-            }}
-          />
-          <textarea
-            name="comments"
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            disabled={disable}
-            placeholder="Write your comment"
+      {loading ? (
+        <RestaurantViewSkeleton />
+      ) : (
+        <>
+          <div
             style={{
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-              fontSize: 16,
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "2rem",
+            }}
+          >
+            <Text>{restaurant && restaurant.name}</Text>
+          </div>
+          <RatingConatiner>
+            <Rating
+              name="read-only"
+              value={averageReview}
+              precision={0.5}
+              readOnly
+            />
+          </RatingConatiner>
+          <Picture src={`http://localhost:5000/${restaurant.image}`} />
+          <DecriptionText>
+            {restaurant && restaurant.description}
+          </DecriptionText>
+          <List
+            sx={{
+              width: "95%",
+              bgcolor: "rgba(0, 0, 0, 0.8)",
+              color: "white",
               marginLeft: "auto",
               marginRight: "auto",
-              width: "90vw",
-              height: 100,
+              marginBottom: "2rem",
             }}
-          />
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              disabled={disable}
+          >
+            <Typography style={{ marginLeft: "1rem", marginBottom: 7 }}>
+              Reviews
+            </Typography>
+            <Divider style={{ background: "grey" }} />
+            {reviews.map((review) => {
+              return (
+                review.restaurant === restaurant._id && (
+                  <div>
+                    <ListItem alignItems="flex-start">
+                      <ListItemText
+                        primary={review.user.username}
+                        secondary={
+                          <div>
+                            <Rating
+                              name="read-only"
+                              value={review.star}
+                              readOnly
+                            />
+                            <br />
+                            <Typography
+                              sx={{
+                                display: "inline",
+                                color: "white",
+                                fontSize: 22,
+                              }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              {review.comments}
+                            </Typography>
+                          </div>
+                        }
+                      />
+                    </ListItem>
+                    {review.reply &&
+                      reviewReply.map((item) => {
+                        return (
+                          review._id === item.review && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                flexDirection: "column",
+                                marginBottom: "2rem",
+                              }}
+                            >
+                              <textarea
+                                name="comments"
+                                disabled
+                                value={item.reply}
+                                placeholder="Write your comment"
+                                style={{
+                                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                  fontSize: 16,
+                                  marginLeft: "auto",
+                                  marginRight: "auto",
+                                  width: "90vw",
+                                  height: 60,
+                                }}
+                              />
+                            </div>
+                          )
+                        );
+                      })}
+                  </div>
+                )
+              );
+            })}
+          </List>
+          <form onSubmit={onSubmit}>
+            <div
               style={{
-                marginTop: 6,
-                maxWidth: 145,
-                right: "3.2rem",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                marginBottom: "2rem",
               }}
-              variant="contained"
-              type="submit"
             >
-              Share Review
-            </Button>
-          </div>
-        </div>
-      </form>
+              <Rating
+                style={{ marginLeft: "3.2rem", marginBottom: 5, width: 20 }}
+                name="simple-controlled"
+                value={rating}
+                disabled={disable}
+                onChange={(e) => {
+                  setRating(e.target.value);
+                }}
+              />
+              <textarea
+                name="comments"
+                value={comments}
+                onChange={(e) => setComments(e.target.value)}
+                disabled={disable}
+                placeholder="Write your comment"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  fontSize: 16,
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  width: "90vw",
+                  height: 100,
+                }}
+              />
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  disabled={disable}
+                  style={{
+                    marginTop: 6,
+                    maxWidth: 145,
+                    right: "3.2rem",
+                  }}
+                  variant="contained"
+                  type="submit"
+                >
+                  Share Review
+                </Button>
+              </div>
+            </div>
+          </form>
+        </>
+      )}
     </Container>
   );
 };

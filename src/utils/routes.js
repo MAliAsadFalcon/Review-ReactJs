@@ -5,12 +5,16 @@ import User from "../pages/user/index";
 import Owner from "../pages/owner/index";
 import Admin from "../pages/admin/index";
 import UserContext from "../context/UserContext";
-const Routes = () => {
+import Loader from "../components/Loader";
+
+const Routes = ({ Loading }) => {
   const { user } = useContext(UserContext);
   return (
     <div>
       <Router>
-        {user.role ? (
+        {Loading ? (
+          <Loader />
+        ) : user.role ? (
           user.role === "user" ? (
             <User />
           ) : user.role === "owner" ? (
