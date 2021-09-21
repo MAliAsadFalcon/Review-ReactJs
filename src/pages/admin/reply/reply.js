@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "../../../utils/axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CircularProgress } from "@mui/material";
 import ListItemSkeleton from "../../../components/ListItemSkeleton";
+import lottie from "lottie-web";
+import { Typography } from "@mui/material";
 
 toast.configure({ limit: 1 });
 const useStyles = makeStyles(() => {
@@ -36,11 +38,24 @@ const Review = () => {
   const [loadingId, setLoadingId] = useState("");
   const [listloading, setListloading] = useState(true);
   const [reply, setReply] = useState([]);
+  const lottieContainer = useRef(null);
 
   useEffect(() => {
     fetchData();
   }, []);
-
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: lottieContainer.current,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      animationData: require("../../../utils/empty.json"),
+    });
+    return () => {
+      lottie.destroy();
+    };
+    // eslint-disable-next-line
+  });
   const fetchData = async () => {
     const tempReply = await axios.get(`/reviewreply/`);
     setReply(tempReply.data.reviewReply);
@@ -71,6 +86,27 @@ const Review = () => {
   };
   return (
     <List>
+      {reply.length === 0 && !listloading && (
+        <>
+          <div
+            style={{
+              height: 190,
+              width: 190,
+              margin: "auto",
+            }}
+            className="lottieContainer"
+            ref={lottieContainer}
+          ></div>
+          <Typography
+            style={{
+              textAlign: "center",
+              marginLeft: -5,
+            }}
+          >
+            Empty
+          </Typography>
+        </>
+      )}
       {listloading ? (
         <ListItemSkeleton />
       ) : (

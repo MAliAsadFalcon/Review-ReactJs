@@ -184,24 +184,30 @@ const RestaurantView = () => {
               Reviews
             </Typography>
             <Divider style={{ background: "grey" }} />
-            <div
-              style={{
-                height: 190,
-                width: 190,
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-              className="lottieContainer"
-              ref={lottieContainer}
-            ></div>
-            <Typography
-              style={{
-                textAlign: "center",
-                marginLeft: -5,
-              }}
-            >
-              Empty
-            </Typography>
+            {!reviews.find(
+              (review) => review.restaurant === restaurant._id
+            ) && (
+              <>
+                <div
+                  style={{
+                    height: 190,
+                    width: 190,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                  className="lottieContainer"
+                  ref={lottieContainer}
+                ></div>
+                <Typography
+                  style={{
+                    textAlign: "center",
+                    marginLeft: -5,
+                  }}
+                >
+                  Empty
+                </Typography>
+              </>
+            )}
             {reviews.map((review) => {
               return (
                 review.restaurant === restaurant._id && (

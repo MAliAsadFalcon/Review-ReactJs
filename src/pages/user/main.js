@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Cards from "../../components/Cards";
 import styled from "styled-components";
 import axios from "../../utils/axios";
 import _, { set } from "lodash";
 import Header from "../../components/Header";
 import CardSkeleton from "../../components/CardSkeleton";
+import lottie from "lottie-web";
+import { Typography } from "@mui/material";
 
 const Container = styled.div`
   position: absolute;
@@ -22,10 +24,25 @@ const Main = () => {
   const [restaurants, setrestaurants] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const lottieContainer = useRef(null);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: lottieContainer.current,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      animationData: require("../../utils/empty.json"),
+    });
+    return () => {
+      lottie.destroy();
+    };
+    // eslint-disable-next-line
+  });
 
   const fetchData = async () => {
     const tempRestaurants = await axios.get("/restaurant/");
@@ -39,6 +56,27 @@ const Main = () => {
     <Container>
       <Header />
       <Content>
+        {restaurants.length === 0 && !loading && (
+          <>
+            <div
+              style={{
+                height: 190,
+                width: 190,
+                margin: "auto",
+              }}
+              className="lottieContainer"
+              ref={lottieContainer}
+            ></div>
+            <Typography
+              style={{
+                textAlign: "center",
+                marginLeft: -5,
+              }}
+            >
+              Empty
+            </Typography>
+          </>
+        )}
         <div
           style={{
             display: "grid",

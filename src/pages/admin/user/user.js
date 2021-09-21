@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "../../../utils/axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,6 +15,8 @@ import { Button, CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ListItemSkeleton from "../../../components/ListItemSkeleton";
+import lottie from "lottie-web";
+import { Typography } from "@mui/material";
 
 toast.configure({ limit: 1 });
 const useStyles = makeStyles(() => {
@@ -52,10 +54,25 @@ const User = () => {
   const [loading, setLoading] = useState(false);
   const [listloading, setListloading] = useState(true);
   const [loadingId, setLoadingId] = useState("");
+  const lottieContainer = useRef(null);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: lottieContainer.current,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      animationData: require("../../../utils/empty.json"),
+    });
+    return () => {
+      lottie.destroy();
+    };
+    // eslint-disable-next-line
+  });
 
   const fetchData = async () => {
     const tempRestaurants = await axios.get(`/user/`);
@@ -106,6 +123,28 @@ const User = () => {
 
   return (
     <List>
+      {!user.find((item) => item.role !== "admin") && !listloading && (
+        <>
+          <div
+            style={{
+              height: 190,
+              width: 190,
+              margin: "auto",
+            }}
+            className="lottieContainer"
+            ref={lottieContainer}
+          ></div>
+          <Typography
+            style={{
+              textAlign: "center",
+              marginLeft: -5,
+            }}
+          >
+            Empty
+          </Typography>
+        </>
+      )}
+
       {listloading ? (
         <ListItemSkeleton />
       ) : (
@@ -141,7 +180,7 @@ const User = () => {
                 >
                   <EditIcon style={{ color: "white" }} />
                 </IconButton>
-
+                <Divider style={{ borderColor: "rgba(0,0,0,0.3)" }} light />
                 <Dialog
                   onClose={() => setOpenEditModel(false)}
                   open={openEditModel}
@@ -199,7 +238,6 @@ const User = () => {
                 </Dialog>
               </ListItem>
             )}
-            <Divider style={{ borderColor: "rgba(0,0,0,0.3)" }} light />
           </div>
         ))
       )}

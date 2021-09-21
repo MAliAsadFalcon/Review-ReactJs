@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import styled from "styled-components";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "../../utils/axios";
 import UserContext from "../../context/UserContext";
 import Header from "../../components/Header";
 import RestaurantViewSkeleton from "../../components/RestaurantViewSkeleton";
+import lottie from "lottie-web";
 
 import {
   Rating,
@@ -56,6 +57,7 @@ const RestaurantView = () => {
   const { restaurantId } = useParams();
   const { user } = useContext(UserContext);
   const history = useHistory();
+  const lottieContainer = useRef(null);
 
   const [restaurant, setRestaurant] = useState({});
   const [reviews, setReviews] = useState([]);
@@ -75,7 +77,19 @@ const RestaurantView = () => {
     avgReview();
     // eslint-disable-next-line
   }, [reviews]);
-
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: lottieContainer.current,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      animationData: require("../../utils/empty.json"),
+    });
+    return () => {
+      lottie.destroy();
+    };
+    // eslint-disable-next-line
+  });
   const fetchData = async () => {
     const tempRestaurants = await axios.get(
       `/restaurant/getById/${restaurantId}`
@@ -167,6 +181,30 @@ const RestaurantView = () => {
               Reviews
             </Typography>
             <Divider style={{ background: "grey" }} />
+            {!reviews.find(
+              (review) => review.restaurant === restaurant._id
+            ) && (
+              <>
+                <div
+                  style={{
+                    height: 190,
+                    width: 190,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                  className="lottieContainer"
+                  ref={lottieContainer}
+                ></div>
+                <Typography
+                  style={{
+                    textAlign: "center",
+                    marginLeft: -5,
+                  }}
+                >
+                  Empty
+                </Typography>
+              </>
+            )}
             {reviews.map((review) => {
               return (
                 review.restaurant === restaurant._id && (
