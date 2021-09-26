@@ -96,6 +96,7 @@ const RestaurantView = () => {
     );
     setRestaurant(tempRestaurants.data.restaurant);
     const tempReviews = await axios.get("/review/");
+    tempReviews.data.review.sort((a, b) => (a.star < b.star ? 1 : -1));
     setReviews(tempReviews.data.review);
     const tempReviewReply = await axios.get(`/reviewreply/`);
     setReviewReply(tempReviewReply.data.reviewReply);
@@ -294,7 +295,7 @@ const RestaurantView = () => {
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
                 disabled={disable}
-                placeholder="Write your comment"
+                placeholder="Write your review"
                 style={{
                   backgroundColor: "rgba(255, 255, 255, 0.8)",
                   fontSize: 16,
@@ -306,7 +307,7 @@ const RestaurantView = () => {
               />
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
-                  disabled={disable}
+                  disabled={disable || !comments}
                   style={{
                     marginTop: 6,
                     maxWidth: 145,

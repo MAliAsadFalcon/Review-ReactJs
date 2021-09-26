@@ -103,6 +103,7 @@ const RestaurantView = () => {
     );
     setRestaurant(tempRestaurants.data.restaurant);
     const tempReviews = await axios.get("/review/");
+    tempReviews.data.review.sort((a, b) => (a.star < b.star ? 1 : -1));
     setReviews(tempReviews.data.review);
     const tempReviewReply = await axios.get(
       `/reviewreply/getByOwnerId/${user._id}`

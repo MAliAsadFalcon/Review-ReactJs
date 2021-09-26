@@ -22,7 +22,6 @@ const Content = styled.div`
 
 const Main = () => {
   const [restaurants, setrestaurants] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const lottieContainer = useRef(null);
 
@@ -45,10 +44,30 @@ const Main = () => {
   });
 
   const fetchData = async () => {
-    const tempRestaurants = await axios.get("/restaurant/");
-    const tempReviews = await axios.get("/review/");
-    setReviews(tempReviews.data.review);
-    setrestaurants(tempRestaurants.data.restaurant);
+    let tempRestaurants = [];
+
+    const resultRestaurants = await axios.get("/restaurant/");
+    const resultReviews = await axios.get("/review/");
+    resultRestaurants.data.restaurant.map((restaurant) => {
+      let tempArray = [];
+      let averageReview = 0;
+
+      resultReviews.data.review.map((review) => {
+        if (restaurant._id === review.restaurant) {
+          tempArray.push(parseInt(review.star));
+        }
+        return null;
+      });
+
+      averageReview = _.sum(tempArray) / tempArray.length;
+      restaurant.averageReview = averageReview ? averageReview : 0;
+      tempRestaurants.push(restaurant);
+    });
+    tempRestaurants.sort((a, b) =>
+      a.averageReview < b.averageReview ? 1 : -1
+    );
+    console.log("tempRestaurants: ", tempRestaurants);
+    setrestaurants(tempRestaurants);
     setLoading(false);
   };
 
@@ -91,21 +110,10 @@ const Main = () => {
             </>
           ) : (
             restaurants.map((restaurant) => {
-              let tempArray = [];
-              let averageReview = 0;
-
-              reviews.map((review) => {
-                if (restaurant._id === review.restaurant) {
-                  tempArray.push(parseInt(review.star));
-                }
-                return null;
-              });
-
-              averageReview = _.sum(tempArray) / tempArray.length;
               return (
                 <Cards
                   name={restaurant.name}
-                  rating={averageReview}
+                  rating={restaurant.averageReview}
                   image={restaurant.image}
                   description={restaurant.description}
                   restaurantId={restaurant._id}
